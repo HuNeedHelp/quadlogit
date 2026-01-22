@@ -3,25 +3,6 @@
 quadlogit
 ===========
 
-quadlogit is a Python package for .......?
-
-The package accompanies the paper: ??
-
-Quick links
------------
-- Documentation: https://quadlogit.readthedocs.io/
-- Source code & replication materials (GitHub): https://github.com/zizhongyan/quadlogit
-
-Main entry point
-----------------
-??
-
-
-Notes
------
-??
-
-
 Version
 -------
 {version}
@@ -34,6 +15,6 @@ __doc__ = (__doc__ or "").format(version=__version__)
 
 from .api.quadlogit import fit
 from . import demo
-from .utils.helpers import loadindex
+from .utils.helpers import generate_quad_indices
 
 

@@ -17,7 +17,7 @@ from scipy import stats
 from ..lib.ipt import logit
 from ..utils.helpers import rearragement_fast
 from ..utils.helpers import standarderror_fast
-from ..utils.helpers import loadindex
+from ..utils.helpers import generate_quad_indices
 #----------------------------------------------------------
 # Class of various network regression
 #----------------------------------------------------------
@@ -25,7 +25,7 @@ class fit:
     """
     ---to be add a helpfile---
     """
-    def __init__(self, G, X=None, X_names=None, silent=False, rearranges=None, permutations=None):
+    def __init__(self, G, X=None, X_names=None, silent=False, indices=None):
         #----------------------------------------------------------
         # Preparations
         #----------------------------------------------------------
@@ -47,15 +47,18 @@ class fit:
         if X is not None:  
             if X.dtype != 'float64': X = X.astype('float64')
         #----------------------------------------------------------
-        # Pre-Estimation 1 Read indices
+        # Pre-Estimation 1 - Read indices
         #----------------------------------------------------------
         start_time = time.time()
-        if rearranges is None or permutations is None:
-            print("Rearrangement/permutation options not specified (quadruple-logit indices were not preloaded).")
-            print("For N <= 100, indices can be loaded automatically.")
-            rearranges, permutations = loadindex(self.N) 
+        if indices is None:
+            if silent is False: 
+                print("Rearrangement/permutation options not specified (quadruple-logit indices were not preloaded).")
+                print("For N <= 100, indices can be loaded automatically.")
+            rearranges, permutations = generate_quad_indices(self.N) 
+        if indices is not None:
+            rearranges, permutations = indices
         #----------------------------------------------------------
-        # Pre-Estimation 2 Construct quadruples
+        # Pre-Estimation 2 - Construct quadruples
         #----------------------------------------------------------
         # Construct quadruples
         zz,rr,ss=rearragement_fast(G,X[:,:,0],rearranges,self.N) # For a three dim X (multiple covariates), we currently only consider the first covariate
@@ -67,6 +70,7 @@ class fit:
         # RHS (independent) variable in quadruple logit
         rhs =  pd.DataFrame()
         rhs['rhs'] = rrr.reshape(-1)
+        self.Nchoose4 = rhs.shape[0]
         #----------------------------------------------------------
         # Estimation
         #----------------------------------------------------------
@@ -88,7 +92,7 @@ class fit:
             print("---- ESTIMATION RESULTS --------------------------------------------------------")             
             print("        DIRECTED NETWORK FORMATION MODEL -- QUADRUPLE LOGIT REGRESSION")
             print("--------------------------------------------------------------------------------")            
-            print("Number of agents: %3s                       Number of obs: %3s" % (self.N,rhs.shape[0]))
+            print("Number of agents: %3s                       Number of quadruples: %3s" % (self.N,rhs.shape[0]))
             print("                                            Time spent (seconds): %5.3f" % end_time)
             print("--------------------------------------------------------------------------------")            
             print("Independent variable    Coefficient     Std. Err.   P>|z|   [95% conf. interval]")

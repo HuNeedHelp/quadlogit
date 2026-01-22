@@ -50,7 +50,7 @@ def standarderror_fast(beta_QL,G,u,m_star,permutations,N):
 
 
 # Read data files of the pre-created indice for QL, for each setting of N
-def loadindex(N):
+def generate_quad_indices(N):
     path = pkg_resources.resource_filename('quadlogit', 'utils/')
     rearragement_index=sp.io.loadmat(path+'N100_rearragement_index.mat')
     permutations=sp.io.loadmat(path+'N100_permutations.mat')
