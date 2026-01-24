@@ -15,7 +15,7 @@ import pkg_resources
 from scipy import io
 
 # Constructing quadruples
-# def rearragement_fast(G,u,rearragement_index,N):
+# def rearrangement_fast(G,u,rearragement_index,N):
 #     rho = int(((N*(N-1))/2)*((N-2)*(N-2-1))/2)
 #     G1diff = G[rearragement_index[:,0],rearragement_index[:,1]] - G[rearragement_index[:,0],rearragement_index[:,3]]
 #     G2diff = G[rearragement_index[:,2],rearragement_index[:,1]] - G[rearragement_index[:,2],rearragement_index[:,3]]
@@ -23,7 +23,7 @@ from scipy import io
 #     zz = (G1diff-G2diff)
 #     rr = (u[rearragement_index[:,0],rearragement_index[:,1]] - u[rearragement_index[:,0],rearragement_index[:,3]])-( u[rearragement_index[:,2],rearragement_index[:,1]] - u[rearragement_index[:,2],rearragement_index[:,3]])
 #     return zz/2, rr, ss
-def rearragement_fast(G, u, N):
+def rearrangement_fast(G, u, N):
     G_cols = G.T.reshape(1, N, N, 1)    # (1, col_j1, row_i2, 1)
     G_rows = G.reshape(N, 1, 1, N)      # (row_i1, 1, 1, col_j2)
     G_self = G.reshape(1, 1, N, N)      # (1, 1, row_i2, col_j2)

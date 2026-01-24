@@ -15,7 +15,7 @@ import pandas as pd
 import time
 from scipy import stats
 from ..lib.ipt import logit
-from ..utils.helpers import rearragement_fast
+from ..utils.helpers import rearrangement_fast
 from ..utils.helpers import standarderror_fast
 from ..utils.helpers import generate_quad_indices
 #----------------------------------------------------------
@@ -61,8 +61,8 @@ class fit:
         # Pre-Estimation 2 - Construct quadruples
         #----------------------------------------------------------
         # Construct quadruples
-        # zz,rr,ss=rearragement_fast(G,X[:,:,0],rearranges,self.N) # For a three dim X (multiple covariates), we currently only consider the first covariate
-        zz, rr, ss = rearragement_fast(G, X[:,:,0], self.N)
+        # zz,rr,ss=rearrangement_fast(G,X[:,:,0],rearranges,self.N) # For a three dim X (multiple covariates), we currently only consider the first covariate
+        zz, rr, ss = rearrangement_fast(G, X[:,:,0], self.N)
         # Drop non-informative quadruples
         zzz = zz[ss==1].reshape(-1,1); zzz = (zzz+1)/2;
         rrr = rr[ss==1].reshape(-1,1);
