@@ -50,18 +50,19 @@ class fit:
         # Pre-Estimation 1 - Read indices
         #----------------------------------------------------------
         start_time = time.time()
-        if indices is None:
-            if silent is False: 
-                print("Rearrangement/permutation options not specified (quadruple-logit indices were not preloaded).")
-                print("For N <= 100, indices can be loaded automatically.")
-            rearranges, permutations = generate_quad_indices(self.N) 
-        if indices is not None:
-            rearranges, permutations = indices
+        # if indices is None:
+        #     if silent is False: 
+        #         print("Rearrangement/permutation options not specified (quadruple-logit indices were not preloaded).")
+        #         print("For N <= 100, indices can be loaded automatically.")
+        #     rearranges, permutations = generate_quad_indices(self.N) 
+        # if indices is not None:
+        #     rearranges, permutations = indices
         #----------------------------------------------------------
         # Pre-Estimation 2 - Construct quadruples
         #----------------------------------------------------------
         # Construct quadruples
-        zz,rr,ss=rearragement_fast(G,X[:,:,0],rearranges,self.N) # For a three dim X (multiple covariates), we currently only consider the first covariate
+        # zz,rr,ss=rearragement_fast(G,X[:,:,0],rearranges,self.N) # For a three dim X (multiple covariates), we currently only consider the first covariate
+        zz, rr, ss = rearragement_fast(G, X[:,:,0], self.N)
         # Drop non-informative quadruples
         zzz = zz[ss==1].reshape(-1,1); zzz = (zzz+1)/2;
         rrr = rr[ss==1].reshape(-1,1);
@@ -78,7 +79,7 @@ class fit:
         self.success = 1
         try:
             self.paras, _, _, _, _, self.success= logit(lhs,rhs, nocons=True , s_wgt=None, silent=True, full=False)
-            _, self.se = standarderror_fast(self.paras.reshape(-1,1),G,X[:,:,0],np.sum(ss),permutations,self.N) # For a three dim X (multiple covariates), we currently only consider the first covariate
+            _, self.se = standarderror_fast(self.paras.reshape(-1,1),G,X[:,:,0],np.sum(ss),self.N) # For a three dim X (multiple covariates), we currently only consider the first covariate
         except:
             self.success = 0
             sys.exit("Estimation failed.")
