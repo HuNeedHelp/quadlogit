@@ -53,18 +53,13 @@ class fit:
             If True, suppresses the printing of estimation results summary.
             If False, prints detailed regression output.
             Default is False.
-            
-        indices : tuple, optional
-            Precomputed quadruple indices (rearranges, permutations) to avoid 
-            recomputation. Currently not actively used in the implementation.
-            Default is None.
 
         Attributes
         ----------
         N : int
             Number of agents (network size).
             
-        Nchoose4 : int
+        n_valid_quads : int
             Number of informative quadruples used in estimation.
             
         paras : ndarray
@@ -93,7 +88,7 @@ class fit:
         >>> X = np.random.randn(3, 3)
         >>> model = fit(G, X=X, X_names=['Distance'])
     """
-    def __init__(self, G, X=None, X_names=None, silent=False, indices=None):
+    def __init__(self, G, X=None, X_names=None, silent=False):
         #----------------------------------------------------------
         # Preparations
         #----------------------------------------------------------
@@ -139,7 +134,7 @@ class fit:
         # RHS (independent) variable in quadruple logit
         rhs =  pd.DataFrame()
         rhs['rhs'] = rrr.reshape(-1)
-        self.Nchoose4 = rhs.shape[0]
+        self.n_valid_quads = rhs.shape[0]
         #----------------------------------------------------------
         # Estimation
         #----------------------------------------------------------
