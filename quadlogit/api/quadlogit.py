@@ -23,7 +23,74 @@ from ..utils.helpers import generate_quad_indices
 #----------------------------------------------------------
 class fit:
     """
-    ---to be add a helpfile---
+        Quadruple Logit Regression for Directed Network Formation Models
+
+        A class for estimating parameters of directed network formation models using 
+        the quadruple logit methodology. This approach constructs informative quadruples 
+        from network adjacency data and estimates the model via conditional logit regression.
+
+        Parameters
+        ----------
+        G : ndarray
+            Adjacency matrix of shape (N, N) representing the directed network.
+            Must be a 2D binary array where G[i,j] = 1 indicates a link from i to j.
+            G[i,j] = 0 indicates no link.
+            
+        X : ndarray, optional
+            Covariates for network formation. Can be:
+            - 2D array of shape (N, N) for a single covariate
+            - 3D array of shape (N, N, K) for K covariates
+            Currently only the first covariate (X[:,:,0]) is used in estimation.
+            Default is None.
+            
+        X_names : list of str, optional
+            Names of the covariates for display in estimation results.
+            If None and X is provided, automatic names "X1", "X2", etc. are generated.
+            Default is None.
+            
+        silent : bool, optional
+            If True, suppresses the printing of estimation results summary.
+            If False, prints detailed regression output.
+            Default is False.
+            
+        indices : tuple, optional
+            Precomputed quadruple indices (rearranges, permutations) to avoid 
+            recomputation. Currently not actively used in the implementation.
+            Default is None.
+
+        Attributes
+        ----------
+        N : int
+            Number of agents (network size).
+            
+        Nchoose4 : int
+            Number of informative quadruples used in estimation.
+            
+        paras : ndarray
+            Estimated coefficients from quadruple logit regression.
+            
+        se : ndarray
+            Standard errors of the estimated coefficients.
+            
+        success : int
+            Indicator of estimation success (1 if successful, 0 otherwise).
+
+        Notes
+        -----
+        - The adjacency matrix G must be binary (containing only 0s and 1s).
+        - The estimation is based on Graham's ipt package (netrics).
+        - Currently only the first covariate from 3D X arrays is utilized.
+        - The method constructs all possible quadruples (i1, j1, i2, j2) where 
+        i1 < i2 and j1 != j2, filters for informative quadruples (where 
+        the network links have opposite patterns), and estimates parameters 
+        via conditional logit.
+
+        Examples
+        --------
+        >>> import numpy as np
+        >>> G = np.array([[0, 1, 0], [1, 0, 1], [0, 1, 0]], dtype=float)
+        >>> X = np.random.randn(3, 3)
+        >>> model = fit(G, X=X, X_names=['Distance'])
     """
     def __init__(self, G, X=None, X_names=None, silent=False, indices=None):
         #----------------------------------------------------------
