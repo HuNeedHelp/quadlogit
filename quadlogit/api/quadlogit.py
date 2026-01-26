@@ -3,7 +3,8 @@ Created on Thu Sep 25 2025
 
 Last modified on Fri Oct 10 2025
 
-Authors: Zizhong Yan
+Authors: Shiran Hu, Muyang Guo, Xinran Cheng, Xuan Zhou
+Supervised by: Zizhong Yan
 """
 #----------------------------------------------------------
 # Load library dependencies
