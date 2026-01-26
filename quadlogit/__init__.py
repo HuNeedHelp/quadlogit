@@ -16,5 +16,3 @@ __doc__ = (__doc__ or "").format(version=__version__)
 from .api.quadlogit import fit
 from . import demo
 from .utils.helpers import generate_quad_indices
-
-

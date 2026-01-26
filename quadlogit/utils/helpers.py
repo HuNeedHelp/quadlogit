@@ -76,6 +76,14 @@ def standarderror_fast(beta_QL,G,u,m_star,N):
     c = (((G1diff>0) * (G2diff<0)) + ((G1diff<0) * (G2diff>0)))
     a = ((G1diff>0) * (G2diff<0))
     r = u_cross - u_rows - u_cols + u_self
+
+    # Apply mask to ensure i1, i2, j1, j2 are all distinct
+    mask = np.eye(N, dtype=bool)
+    # reshape成(N, N, N, N)的形式，然后应用mask
+    mask_4d = mask.reshape(N, 1, N, 1) | mask.reshape(1, N, 1, N) | mask.reshape(N, 1, 1, N) | mask.reshape(1, N, N, 1)
+    c = c[~mask_4d]
+    a = a[~mask_4d]
+    r = r[~mask_4d]
     rho = len(c)
     pn = m_star/rho
 
