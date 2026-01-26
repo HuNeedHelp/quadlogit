@@ -278,7 +278,7 @@ print(f"95% CI: [{result.paras[0] - 1.96*result.se[0]:.4f}, {result.paras[0] + 1
 
 ```
 --------------------------------------------------------------------------------
----- ESTIMATION RESULTS --------------------------------------------------------
+---------------------------- ESTIMATION RESULTS --------------------------------
         DIRECTED NETWORK FORMATION MODEL -- QUADRUPLE LOGIT REGRESSION
 --------------------------------------------------------------------------------
 Number of agents: 50                        Number of obs: [M]
