@@ -51,8 +51,64 @@ def rearrangement_fast(G, u, N):
     total_mask = row_mask.reshape(N, 1, N, 1) & col_mask.reshape(1, N, 1, N)
     ss = ss[total_mask] # shape (num_quadruples,)
     zz = zz[total_mask] # shape (num_quadruples,)
-    rr = rr[:, total_mask].reshape(-1) if u.shape[0] == 1 else rr[:, total_mask] # shape (num_quadruples,) or (features, num_quadruples)
-    return zz/2, rr, ss
+    rr = rr[:, total_mask].reshape(-1) if u.shape[0] == 1 else rr[:, total_mask].T # shape (num_quadruples,) or (num_quadruples, features)
+    # Drop non-informative quadruples
+    zz = zz[ss] / 2
+    rr = rr[ss] if len(rr.shape) == 1 else rr[ss, :]
+    return (zz + 1)/2, rr, ss
+
+
+# def rearrangement_fast_optimized(G, u, N):
+#     # ---- u reshape ----
+#     if u.ndim == 3:
+#         u = u.transpose(2, 0, 1)   # (features, N, N)
+#     else:
+#         u = u.reshape(1, N, N)
+
+#     F = u.shape[0]
+
+#     zz_list = []
+#     rr_list = []
+#     ss_list = []
+
+#     for i1 in range(N):
+#         for i2 in range(i1 + 1, N):
+#             # i1 < i2
+#             G1_diff = G[i1, :, None] - G[i1, None, :]   # (i1, [j1, 1]) - (i1, [1, j2]) => (N, N)
+#             G2_diff = G[i2, :, None] - G[i2, None, :]   # (i2, [j1, 1]) - (i2, [1, j2]) => (N, N)
+
+#             # j1 != j2
+#             col_mask = ~np.eye(N, dtype=bool)
+
+#             ss = ((G1_diff > 0) & (G2_diff < 0)) | ((G1_diff < 0) & (G2_diff > 0))
+#             ss &= col_mask
+
+#             if not ss.any():
+#                 continue
+
+#             zz = (G1_diff - G2_diff)[ss] / 2   # (num_quad,)
+
+#             # rr
+#             u = u[None, :, :] if len(u.shape) < 3 else u
+#             rr = (
+#                 u[:, i1, :, None] - u[:, i1, None, :]
+#                 - u[:, i2, :, None] + u[:, i2, None, :]
+#             )  # (F, N, N)
+
+#             if F == 1:
+#                 rr = rr[0][ss]
+#             else:
+#                 rr = rr[:, ss].T  # (num_quad, F)
+
+#             zz_list.append(zz)
+#             rr_list.append(rr)
+#             ss_list.append(ss[ss])
+
+#     zz = np.concatenate(zz_list)
+#     rr = np.concatenate(rr_list, axis=0)
+#     ss = np.concatenate(ss_list)
+
+#     return zz, rr, ss
 
 # Computing SEs -- fast version.
 def standarderror_fast(beta_QL,G,u,m_star,N):
@@ -83,7 +139,7 @@ def standarderror_fast(beta_QL,G,u,m_star,N):
     mask_4d = mask.reshape(N, 1, N, 1) | mask.reshape(1, N, 1, N) | mask.reshape(N, 1, 1, N) | mask.reshape(1, N, N, 1)
     c = c[~mask_4d]
     a = a[~mask_4d]
-    r = r[~mask_4d]
+    r = r[0, ~mask_4d] if u.shape[0] == 1 else r[:, ~mask_4d].T   # shape (num_quadruples,) or (num_quadruples, features)
     rho = len(c)
     pn = m_star/rho
 

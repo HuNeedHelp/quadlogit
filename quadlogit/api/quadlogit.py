@@ -125,14 +125,11 @@ class fit:
         #----------------------------------------------------------
         # Construct quadruples
         # zz,rr,ss=rearrangement_fast(G,X[:,:,0],rearranges,self.N) # For a three dim X (multiple covariates), we currently only consider the first covariate
-        zz, rr, ss = rearrangement_fast(G, X, self.N)
-        # Drop non-informative quadruples
-        zzz = zz[ss==1].reshape(-1,1); zzz = (zzz+1)/2;
-        rrr = rr[ss==1].reshape(-1,1) if len(rr.shape)==1 else rr[ss==1, :];
+        zzz, rrr, ss = rearrangement_fast(G, X, self.N)
         # LHS (dependent) variable in quadruple logit
         lhs =  pd.Series(zzz.reshape(-1), name='lhs')
         # RHS (independent) variable in quadruple logit
-        rhs = pd.DataFrame(rrr, columns=[f'rhs_{i+1}' for i in range(rrr.shape[1])]) if len(rr.shape)>1 else pd.DataFrame(rrr, columns=['rhs'])
+        rhs = pd.DataFrame(rrr, columns=[f'rhs_{i+1}' for i in range(rrr.shape[1])]) if len(rrr.shape)>1 else pd.DataFrame(rrr, columns=['rhs'])
         # rhs =  pd.DataFrame()
         # rhs['rhs'] = rrr.reshape(-1)
         self.n_valid_quads = rhs.shape[0]
