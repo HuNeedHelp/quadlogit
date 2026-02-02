@@ -570,9 +570,3 @@ If you use Quadlogit in your research, please cite:
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
-## Citation
-
-Graham, Bryan S. (2017). "ipt: a Python 3.7 package for causal inference by inverse 
- probability tilting," (Version 0.2.2) [Computer program]. Available at 
- https://github.com/bryangraham/ipt (Accessed 04 Oct 2018) 
-
