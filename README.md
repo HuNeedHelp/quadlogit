@@ -80,7 +80,7 @@ result = quadlogit.fit(G, X, silent=True)
 ### Core Function: `quadlogit.fit()`
 
 ```python
-quadlogit.fit(G, X=None, X_names=None, silent=False, indices=None)
+quadlogit.fit(G, X=None, X_names=None, silent=False)
 ```
 
 #### Parameters
@@ -88,7 +88,7 @@ quadlogit.fit(G, X=None, X_names=None, silent=False, indices=None)
 | Parameter   | Type                              | Default            | Description                                                                                                                                                   |
 | ----------- | --------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `G`       | numpy.ndarray (N×N)              | **Required** | Binary adjacency matrix of the network. Must be float64. Shape (N, N) where N is the number of agents. Values must be 0 or 1.                                 |
-| `X`       | numpy.ndarray (N×N×K) or (N×N) | None               | Dyadic covariates. Can be 2D (N×N) which is auto-expanded to (N×N×1), or 3D (N×N×K).**Note:** Only the first covariate X[:,:,0] is currently used. |
+| `X`       | numpy.ndarray (N×N×K) or (N×N) | None               | Dyadic covariates. Can be 2D (N×N) which is auto-expanded to (N×N×1), or 3D (N×N×K). All covariates are used in estimation. |
 | `X_names` | list of str                       | None               | Names of covariates for output display. If None, auto-generates names as "X1", "X2", etc.                                                                     |
 | `silent`  | bool                              | False              | If True, suppresses the output table. If False, prints estimation results including coefficients, standard errors, and p-values.                              |
 
@@ -98,9 +98,9 @@ Returns a `fit` object with the following attributes:
 
 | Attribute    | Type          | Description                                                                                             |
 | ------------ | ------------- | ------------------------------------------------------------------------------------------------------- |
-| `paras`    | numpy.ndarray | Estimated coefficients (1D array). First element is covariate coefficient, remaining are fixed effects. |
+| `paras`    | numpy.ndarray | Estimated coefficients (1D array) corresponding to covariates in `X` / `X_names`. |
 | `se`       | numpy.ndarray | Standard errors of the coefficients.                                                                    |
-| `success`  | int           | 1 if estimation succeeded, 0 if failed.                                                                 |
+| `success`  | int           | 1 if estimation succeeded. (On failure, the current implementation raises an error.)                                                                 |
 | `N`        | int           | Number of agents in the network.                                                                        |
 | `n_valid_quads` | int           | Number of informative quadruples used in estimation.                                                    |
 
@@ -281,7 +281,7 @@ print(f"95% CI: [{result.paras[0] - 1.96*result.se[0]:.4f}, {result.paras[0] + 1
 ---------------------------- ESTIMATION RESULTS --------------------------------
         DIRECTED NETWORK FORMATION MODEL -- QUADRUPLE LOGIT REGRESSION
 --------------------------------------------------------------------------------
-Number of agents: 50                        Number of obs: [M]
+Number of agents: 50                        Number of quadruples: [M]
                                             Time spent (seconds):  X.XXX
 --------------------------------------------------------------------------------
 Independent variable    Coefficient     Std. Err.   P>|z|   [95% conf. interval]
@@ -373,22 +373,19 @@ np.random.seed(42)
 G = np.random.binomial(1, 0.15, (N, N)).astype('float64')
 np.fill_diagonal(G, 0)  # No self-loops
 
-# Multiple covariates (only first is used currently)
+# Multiple covariates
 X1 = np.random.normal(0, 1, (N, N)).astype('float64')  # Continuous covariate
 X2 = np.random.binomial(1, 0.5, (N, N)).astype('float64')  # Binary covariate
 
 X = np.stack([X1, X2], axis=2)
 
-# Estimate (only X1 is used)
+# Estimate (all covariates are used)
 result = quadlogit.fit(
     G, 
     X,
-    X_names=["Continuous Feature", "Binary Feature (unused)"],
+    X_names=["Continuous Feature", "Binary Feature"],
     silent=False
 )
-
-print(f"\nNote: Only 'Continuous Feature' is used in current version.")
-print(f"      'Binary Feature' is included for future multi-covariate support.")
 ```
 
 ---
@@ -405,22 +402,20 @@ print(f"      'Binary Feature' is included for future multi-covariate support.")
    - No self-loops (diagonal should be 0)
 2. **Covariates `X`**:
 
-   - Can be 2D (N, N) or 3D (N, N, K)
-   - Data type must be float64 (auto-converted if needed)
-   - **Currently only first covariate `X[:,:,0]` is used**
+    - Can be 2D (N, N) or 3D (N, N, K)
+    - Data type must be float64 (auto-converted if needed)
+    - All covariates are used in estimation
+    - Required in the current implementation
 
 ### Current Limitations
 
-1. **Single Covariate**: The implementation currently uses only the first covariate. Multi-covariate support requires refactoring of the quadruple construction logic.
-2. **Directed Networks Only**: Current API supports directed networks. Undirected/mutual extensions exist (see `_readme.txt`) but are not exposed in the main API.
-3. **Network Size**: Tensor construction scales as O(N^4); runtimes and memory grow quickly with N. N ≤ 150 is practical; larger N may be costly.
-4. **Fixed Effects**: The method automatically handles agent-level fixed effects through quadruple differencing. Dyadic-level fixed effects are not supported.
+1. **Directed Networks Only**: Current API supports directed networks. Undirected/mutual extensions exist (see `_readme.txt`) but are not exposed in the main API.
+2. **Network Size**: Tensor construction scales as O(N^4); runtimes and memory grow quickly with N. N ≤ 150 is practical; larger N may be costly.
+3. **Fixed Effects**: The method handles agent-level fixed effects through quadruple differencing. Dyadic-level fixed effects are not supported.
 
 ### Error Handling
 
-- Missing index files (for N ≤ 100) trigger automatic loading from `.mat` files
-- Estimation failures silently set `result.success = 0`
-- Check `result.success == 1` to verify successful estimation
+- Estimation failures raise an error (current implementation uses `sys.exit("Estimation failed.")`)
 
 ### Silent Mode
 
@@ -529,7 +524,7 @@ If you use Quadlogit in your research, please cite:
 - Check for floating-point precision issues
 - Example: `G = (G > 0.5).astype(float)`
 
-**Q: "Estimation failed" (result.success == 0)**
+**Q: "Estimation failed" (program exits)**
 
 - Check for perfect separation in quadruple data
 - Try different network sizes or specifications
@@ -547,7 +542,7 @@ If you use Quadlogit in your research, please cite:
 
 **Q: Can I use multiple covariates?**
 
-- Currently, only the first covariate is used. Multi-covariate support is planned for future versions.
+- Yes. Provide `X` with shape (N, N, K). The output coefficients follow the same order as `X_names` (or `X1`, `X2`, ... if not provided).
 
 **Q: Does this work with undirected networks?**
 
@@ -555,8 +550,7 @@ If you use Quadlogit in your research, please cite:
 
 **Q: How do I interpret the coefficients?**
 
-- The first coefficient is the effect of the dyadic covariate on link formation probability.
-- Remaining coefficients are fixed effects for each agent.
+- Each coefficient corresponds to a covariate in `X` and reflects its effect on link formation probability.
 
 **Q: What if my network has isolated nodes?**
 
