@@ -155,17 +155,18 @@ def standarderror_fast(beta_QL,G,u,m_star,N):
     # r[permutations[:,0],permutations[:,1],permutations[:,2],permutations[:,3]] = (u[permutations[:,0],permutations[:,1]] - u[permutations[:,0],permutations[:,3]])-(u[permutations[:,2],permutations[:,1]] - u[permutations[:,2],permutations[:,3]]) 
 
     # standard GMM - conditional likelihood
+    beta_QL = beta_QL.reshape(-1, 1, 1, 1, 1)  # (n_params, 1) -> (n_params, 1, 1, 1, 1)
     eee = np.exp(r*beta_QL) * mask_4d
     FFF = eee/(1+eee) 
     rc=r*c
-    xi = 4*np.sum(np.sum(((a- FFF)*rc),axis=3),axis=2)/((N-2)*(N-3)); V = np.sum(xi**2)/(N*(N-1))
-    Q  =   (-r*(FFF/(1+eee))*rc).sum()/(N*(N-1)*(N-2)*(N-3))
+    xi = 4*np.sum(np.sum(((a- FFF)*rc),axis=-1),axis=-2)/((N-2)*(N-3)); V = np.sum(xi**2, axis=(-1, -2))/(N*(N-1))
+    Q  =   np.sum(-r*(FFF/(1+eee))*rc, axis=(-1, -2, -3, -4))/(N*(N-1)*(N-2)*(N-3))
 
     Q = Q/pn; V = V/pn;
 
     W = (1/(Q.T*Q).T)*(Q.T*V*Q)*(1/(Q.T*Q)); se1 = np.sqrt( W /(N*(N-1)*pn) )
     W = (1/(Q))        *V*      (1/(Q));     se2 = np.sqrt( W /(N*(N-1)*pn) )
-    return np.array([se1]), np.array([se2])
+    return se1, se2
 
 
 # Read data files of the pre-created indice for QL, for each setting of N
