@@ -195,7 +195,8 @@ def logit(D, X, s_wgt=None, nocons=False, c_id=None, silent=False, full=True):
         omega = fsc*(sum_score.T @ sum_score)               # K X K variance-covariance of the summed moments
     
     # Compute variance-covariance matrix of delta_ml
-    iH     = np.linalg.inv(hess_logl)
+    # iH = np.linalg.inv(hess_logl)
+    iH = sp.linalg.solve(hess_logl, np.eye(hess_logl.shape[0]))
     vcov_hat = iH @ omega @ iH.T     
     
 
