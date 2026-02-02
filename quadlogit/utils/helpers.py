@@ -137,10 +137,11 @@ def standarderror_fast(beta_QL,G,u,m_star,N):
     mask = np.eye(N, dtype=bool)
     # reshape成(N, N, N, N)的形式，然后应用mask
     mask_4d = mask.reshape(N, 1, N, 1) | mask.reshape(1, N, 1, N) | mask.reshape(N, 1, 1, N) | mask.reshape(1, N, N, 1)
-    c = c[~mask_4d]
-    a = a[~mask_4d]
-    r = r[0, ~mask_4d] if u.shape[0] == 1 else r[:, ~mask_4d].T   # shape (num_quadruples,) or (num_quadruples, features)
-    rho = len(c)
+    mask_4d = ~mask_4d
+    c = c * mask_4d
+    a = a * mask_4d
+    r = r * mask_4d   # shape (num_quadruples,) or (num_quadruples, features)
+    rho = len(c[mask_4d])  # number of valid quadruples
     pn = m_star/rho
 
     # rho = int(((N*(N-1))/2)*((N-2)*(N-2-1))/2); pn = m_star/rho
@@ -154,7 +155,7 @@ def standarderror_fast(beta_QL,G,u,m_star,N):
     # r[permutations[:,0],permutations[:,1],permutations[:,2],permutations[:,3]] = (u[permutations[:,0],permutations[:,1]] - u[permutations[:,0],permutations[:,3]])-(u[permutations[:,2],permutations[:,1]] - u[permutations[:,2],permutations[:,3]]) 
 
     # standard GMM - conditional likelihood
-    eee = np.exp(r*beta_QL)
+    eee = np.exp(r*beta_QL) * mask_4d
     FFF = eee/(1+eee) 
     rc=r*c
     xi = 4*np.sum(np.sum(((a- FFF)*rc),axis=3),axis=2)/((N-2)*(N-3)); V = np.sum(xi**2)/(N*(N-1))
