@@ -417,16 +417,6 @@ result = quadlogit.fit(
 
 - Estimation failures raise an error (current implementation uses `sys.exit("Estimation failed.")`)
 
-### Silent Mode
-
-```python
-# Default (silent=False): prints detailed output
-result = quadlogit.fit(G, X, silent=False)
-
-# Silent mode (silent=True): no printed output
-result = quadlogit.fit(G, X, silent=True)
-```
-
 ---
 
 ## Architecture Overview
