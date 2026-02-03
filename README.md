@@ -29,7 +29,7 @@ pip install quadlogit
 
 ```bash
 # Clone the repository
-git clone https://github.com/zizhongyan/quadlogit.git
+git clone https://github.com/HuNeedHelp/quadlogit.git
 cd quadlogit
 
 # Install in development mode
