@@ -463,8 +463,8 @@ Output: result.paras, result.se, result.success
 
 ### Methodological Foundation
 
-- Graham, B. S. (2017). "An econometric model of link formation with degree heterogeneity." *Econometrica*, 85(4), 1033-1063.
-- Jochmans, K. (2019). "Semiparametric estimation of network formation games." *Journal of Econometrics*, 211(2), 472-487.
+- Graham B S. An econometric model of network formation with degree heterogeneity[J]. Econometrica, 2017, 85(4): 1033-1063.
+- Jochmans, Koen. "Semiparametric analysis of network formation." Journal of Business & Economic Statistics 36, no. 4 (2018): 705-713.
 
 ### Related Packages
 
@@ -550,7 +550,7 @@ If you use Quadlogit in your research, please cite:
 
 ## Support & Contributions
 
-- **Issues**: https://github.com/zizhongyan/quadlogit/issues
+- **Issues**: https://github.com/HuNeedHelp/quadlogit/issues
 - **Documentation**: https://quadlogit.readthedocs.io/
 - **Discussions**: GitHub Discussions (to be enabled)
 
