@@ -471,7 +471,6 @@ Output: result.paras, result.se, result.success
 
 ### Methodological Foundation
 
-- Graham B S. An econometric model of network formation with degree heterogeneity[J]. Econometrica, 2017, 85(4): 1033-1063.
 - Jochmans, Koen. "Semiparametric analysis of network formation." Journal of Business & Economic Statistics 36, no. 4 (2018): 705-713.
 
 ### Related Packages
