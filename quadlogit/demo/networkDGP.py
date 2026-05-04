@@ -180,3 +180,4 @@ def GenData(N, directed=True, mutual=False,specification="A1",seed=111):
     if directed==True and mutual==False: trueParameter = np.hstack((1,Alphai,Gammai))
     if directed==True and mutual==True: trueParameter = np.hstack((1,1,Alphai,Gammai))
     return G,Xmat.reshape(N,N,1),Zmat.reshape(N,N,1),density,degree,transitivity,separation,trueParameter
+
