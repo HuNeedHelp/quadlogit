@@ -495,6 +495,18 @@ Output: result.paras, result.se, result.success
 - Status: Active development
 - License: MIT
 
+### Citing Quadlogit
+
+If you use Quadlogit in your research, please cite:
+
+```bibtex
+@software{hu2026quadlogit,
+  title={Quadlogit: Quadruple Logit Regression for Network Formation Models},
+  author={Hu, Shiran and Guo, Muyang and Cheng, Xinran and Zhou, Xuan},
+  year={2026},
+  url={https://github.com/HuNeedHelp/quadlogit}
+}
+```
 ---
 
 ## Troubleshooting
