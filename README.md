@@ -7,6 +7,8 @@
 
 **Quadlogit** is a Python package for **quadruple logit regression** in **network formation models**. It estimates parameters of directed networks using a specialized quasi-differencing approach that constructs informative quadruples from network data.
 
+The methodology implemented in this software serves as a tribute to the seminal work of Professor Koen Jochmans ("Semiparametric analysis of network formation," _Journal of Business & Economic Statistics_, (2018)).
+
 The key innovation is the **quadruple construction** method: instead of analyzing individual links, the method forms 4-tuples of agents and uses differential comparisons of link patterns to eliminate agent-specific fixed effects. This approach provides consistent parameter estimates in networks with agent heterogeneity.
 
 ### Key Features
@@ -16,6 +18,12 @@ The key innovation is the **quadruple construction** method: instead of analyzin
 - ✅ **Automatic standard error calculation** via fully vectorized tensor ops
 - ✅ **Data generation utilities** for Monte Carlo studies
 - ✅ **Flexible API** with silent/verbose modes
+
+## About the Project
+
+This package originated as a student interest project primarily developed by Shiran Hu (undergraduate students at [IESR of Jinan University](https://iesr.jnu.edu.cn/Home/main.htm)), under the guidance and supervision of [Professor Zizhong Yan](https://zizhongyan.github.io). As an academic exploration and open-source tool, it is continually evolving.
+
+While we strive for accuracy and stability, there may still be some small bugs. We warmly welcome community feedback—if you encounter any issues or have suggestions for improvement, please feel free to report them via our GitHub Issues.
 
 ## Installation
 
@@ -476,8 +484,7 @@ Output: result.paras, result.se, result.success
 ## Development & Citation
 
 ### Code Contributors
-
-- Prof. **Zizhong Yan** (Advisor)
+ 
 - **Shiran Hu**
 - **Muyang Guo**
 - **Xinran Cheng**
@@ -494,10 +501,10 @@ Output: result.paras, result.se, result.success
 If you use Quadlogit in your research, please cite:
 
 ```bibtex
-@software{yan2025quadlogit,
+@software{hu2026quadlogit,
   title={Quadlogit: Quadruple Logit Regression for Network Formation Models},
   author={Hu, Shiran and Guo, Muyang and Cheng, Xinran and Zhou, Xuan},
-  year={2025},
+  year={2026},
   url={https://github.com/HuNeedHelp/quadlogit}
 }
 ```
@@ -551,7 +558,7 @@ If you use Quadlogit in your research, please cite:
 ## Support & Contributions
 
 - **Issues**: https://github.com/HuNeedHelp/quadlogit/issues
-- **Documentation**: https://quadlogit.readthedocs.io/
+- **Documentation**: https://quadlogit.readthedocs.io/ (Comming soon.)
 - **Discussions**: GitHub Discussions (to be enabled)
 
 ---
